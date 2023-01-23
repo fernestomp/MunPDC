@@ -1,0 +1,72 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="4001215772" file="C:\Users\mungu\Dropbox\Doctorado\UASLP\Matlab\PDC.prj" location="C:\Users\mungu\Dropbox\Doctorado\UASLP\Matlab" name="PDC" target="target.mlapps" target-name="Package App">
+    <param.appname>PDC</param.appname>
+    <param.authnamewatermark />
+    <param.email />
+    <param.company />
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>C:\Users\mungu\Dropbox\Doctorado\UASLP\Matlab</param.output>
+    <param.guid>94caeb56-c48d-43cf-9b0a-89e8cf487f31</param.guid>
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\PDC2017a.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\conectarPMU.m</file>
+      <file>${PROJECT_ROOT}\decodeCFG2.m</file>
+      <file>${PROJECT_ROOT}\decodeDataFrame.m</file>
+      <file>${PROJECT_ROOT}\getCRC.m</file>
+      <file>${PROJECT_ROOT}\PMUData.csv</file>
+      <file>${PROJECT_ROOT}\readDFPMU.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\mungu\Dropbox\Doctorado\UASLP" name="Matlab" optional="false">C:\Users\mungu\Dropbox\Doctorado\UASLP\Matlab</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2017a</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.2</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

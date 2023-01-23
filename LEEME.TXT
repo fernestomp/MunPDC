@@ -1,0 +1,10 @@
+- Creo que el proyecto esta hecho originalmente en matlab 2017 pero actualizado la version 2019.
+- Todos los scripts giran alrededor de la GUI PDC.mlapp, por lo que para iniciar a entender lo que hice se debería de abrir este archivo. Pero los scripts se pueden ejecutar individualmente sin necesidad
+  de la app.
+- Hay diferentes scripts para el CRC, creo que terminé usando uno que yo no hice, sino que lo bajé de la pagina de Mathworks.
+- El cálculo de ángulo de fase es muy rudimentario, cuando se use, revisar que es el ángulo correcto.
+- Existe un instalador del archivo munPDC.exe, que es la version para redistribución standalone de mis scripts. En mi computadora corre bien
+  el archivo munPDC.exe se ejecuta en mi computadora sin errores.
+- Había empezado los scripts para hacer datalogging, pero los dejé incompletos porque empece a reescribir el código en python.
+- Opté por la readability en lugar de la eficiencia, no debería de ser muy complicado de entender los codigos. Donde se pone complicado es 
+ en la parte donde hago multithreading, que ni para mi es facil de entender, pero el script funciona.
