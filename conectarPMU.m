@@ -1,6 +1,14 @@
 %archivo de funciones que puede ser usada por la app pero no exclusivamente
 %% ------------ CONECTAR-------------------
 function [tcpobj, dFrame] = conectarPMU(ip,puerto,idcode)
+%ip: ip de la PMU
+%puerto: puerto de la PMU
+%idcode: IDCODE de la pmu
+%returns:
+%dFreame: Configuration frame 2 de la PMU (sin decodificar) 
+%tcpobj: el objeto socket creado. Este objeto se pasaría a los demás
+%scripts de ser necesario.
+
 % 1 field SYNC 
 field1_1 = 170;%AA.
 field1_2 = 65; %0-reservado;100-data frame comando;0001-2005
@@ -23,7 +31,7 @@ field5_3 =0;
 field5_4 =0;
 %6 CMD
 field6_1 = 0; %primer byte es cero
-field6_2= 5; %00000101- comandoget CFG2
+field6_2= 5; %00000101- comando get CFG2
 %7 EXTFRAME no se usa
 %8 CHK
 %mensajae sin CHK
@@ -34,9 +42,11 @@ messnoCHK = [field1_1 , field1_2,...
     field5_1, field5_2, field5_3, field5_4...
     field6_1, field6_2];
 
+
 [crc1,crc2] = getCRC(messnoCHK);
+
 message = [messnoCHK, crc1, crc2];
-message
+
 tcpobj = tcpclient(ip,puerto, 'ConnectTimeout', 10);
 write(tcpobj,uint8(message));
 

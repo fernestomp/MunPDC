@@ -1,5 +1,12 @@
 %decodificar el mensaje CFG2
 function [CFG2, cellPhasors] = decodeCFG2(dframe)
+%dframe: Configuration frame 2 recibido de la PMU
+%returns:
+%cellPhasors: objeto cell de Matlab que almacena la información decoficada
+%de los fasores
+%CFG2: objeto struct de matlab con formato CFG2
+
+
 %1 SYNC 2 bytes
 %First byte: AA hex
 %Second byte: 21 hex for configuration 1

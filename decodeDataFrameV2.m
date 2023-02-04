@@ -1,7 +1,6 @@
 % decodeDataFrame %falta el factor de conversion
-function [decodedDF, PHEst, ANEst, DIGBits] = decodeDataFrame(dFrame, repPH,repFREQ,repAN,...
-repPHpol,PHNMR,ANNMR,DGNMR,timeBase,facConv)
-%dFramdae: dataframe leido de la PMU.
+function [decodedDF, PHEst, ANEst, DIGBits] = decodeDataFrameV2(dFrame, confFrame2)
+%dFrame: dataframe leido de la PMU.
 %repPH, repFreq, repAN, etc: no me acuerdo que significa el rep, pero lo demas
 %son los datos que vienen en el CGF2 y que son necesarios para decodidifcar
 %el dataframe. Tal vez aqui se usa la structura CFG2.
@@ -16,7 +15,22 @@ repPHpol,PHNMR,ANNMR,DGNMR,timeBase,facConv)
 %PHNMR número de fasores
 %ANNMR número de analogicos
 %DGNMR número de digitales
+%facConv factor de conversion de los fasores
 %repPHpol representacion polar o rectangular de los fasores
+%repAn entero o punto flotante de los valores analogicos
+%
+repPH = confFrame2.PH_REP;
+repFREQ = confFrame2.FREQ_REP;
+PHNMR = confFrame2.PH_NUMBER;
+ANNMR = confFrame2.AN_NUMBER;
+DGNMR = confFrame2.DG_NUMBER;
+repPHpol = confFrame2.PH_POL_REP;
+facConv = confFrame2.FACCONV;
+repAN = confFrame2.AN_REP;
+timeBase = confFrame2.TIME_BASE;
+
+
+
 DIGBits=0;% si no hay salidas digitales lo pongo a cero
 
 %1 SYNC 2 bytes
@@ -121,12 +135,20 @@ if repPH ==0 %entero de 16 bits
     if repPHpol==0 %representacion rectangular
         
         for i = 1:PHNMR
-            
-            PHEst(i,1) = abs(byte1 + byte2) *facConv;%magniutd
-            % esto esta bien??????????????????????
-            %multiplicar el angulo por el facconv y dividirlo entre
-            %10^4????
-            PHEst(i,2) = rad2deg(angle(byte1 + byte2)*facConv)/10^4;%fase
+            %segun la tabla 10 de estandar, si la representacion es en
+            %punto flotante se debe ignorar el factor de conversion.
+            if repPH ==0
+                PHEst(i,1) = abs(byte1 + byte2) *facConv;%magnitud
+                
+                % esto esta bien??????????????????????
+                %multiplicar el angulo por el facconv y dividirlo entre
+                %10^4????
+                PHEst(i,2) = rad2deg(angle(byte1 + byte2)*facConv)/10^4;%angulo
+            else
+                PHEst(i,1) = abs(byte1 + byte2); %magnitud del fasor
+                PHEst(i,2) = rad2deg(angle(byte1 + byte2));%angulo
+            end
+           
             
         end
         
@@ -140,16 +162,33 @@ if repPH ==0 %entero de 16 bits
             byte1 = typecast([fnbytes(2) fnbytes(1)],'uint16');
             byte2  = typecast([fnbytes(4) fnbytes(3)],'int16');
             PHEst(i,1) = double(byte1) * facConv; %Magnitud
-            PHEst(i,2) = rad2deg(double(byte2) /10^4); %Fase
+            PHEst(i,2) = rad2deg(double(byte2) /10^4); %angulo
         end
         
     end
     
 else %flotante de 32 bits
-    nBytes = 8;%8bytes 32bits y 32bits
-    endByte_PHEst = 17+(nBytes*PHNMR)-1;
-
- 
+    for i = 1:PHNMR
+    
+        nBytes = 8;%8bytes 32bits y 32bits
+        endByte_PHEst = 17+(nBytes*PHNMR)-1;
+        fasores = dFrame(17:endByte_PHEst);
+        inicio = nBytes*(i-1)+1;
+        fin = inicio+nBytes-1;
+        fnbytes = fasores(inicio:fin);
+        %el estandar maneja valores punto flotante de 32 bits, eso tipo single
+        %en matlab
+        bytesMag = uint8([fnbytes(4) fnbytes(3) fnbytes(2) fnbytes(1)]);
+        phMagnitude = typecast(bytesMag,'single');
+        bytesAng = uint8([fnbytes(8) fnbytes(7) fnbytes(6) fnbytes(5)]);
+        phAngle = typecast(bytesAng,'single');
+        PHEst(i,1) = phMagnitude * facConv; %Magnitud
+        PHEst(i,2) = rad2deg(phAngle); %angulo
+        fprintf('Fasor %i, factor de conversion %f\n',i,facConv)
+        fprintf('Magnitud: %f (%f)\n',PHEst(i,1),PHEst(i,1)*sqrt(3))
+        fprintf('Ángulo: %f\n',PHEst(i,2))
+        fprintf('-------------------------------------\n')
+    end
 end
 
 %% 8 FREQ estimado de la frecuencia
@@ -162,6 +201,11 @@ if repFREQ ==0 %entero de 16 bits
 
 else
     nBytes = 4;% flotante de 32 bits
+   f = dFrame(endByte_PHEst+1:endByte_PHEst+nBytes);
+    bytesFreq = uint8([f(4) f(3) f(2) f(1)]);
+    FREQEst = typecast(bytesFreq,'single');
+    
+
 end
 endByte_FREQDev = endByte_PHEst + nBytes; 
 
@@ -175,6 +219,9 @@ if repFREQ ==0 %entero de 16 bits
 
 else
     nBytes = 4;% flotante de 32 bits
+    devf = dFrame(endByte_FREQDev+1:endByte_FREQDev+nBytes);
+    bytesDFREQ = uint8([devf(4) devf(3) devf(2) devf(1)]);
+    DFREQEst = typecast(bytesDFREQ,'single');
 end
 endByte_DFREQEst = endByte_FREQDev + nBytes; %se incluye el primer byte
 

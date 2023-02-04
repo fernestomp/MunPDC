@@ -32,7 +32,7 @@ Crc_ui16LookupTable=[0,4129,8258,12387,16516,20645,24774,28903,33032,37161,41290
 ui16RetCRC16 = hex2dec('FFFF');
 for I=1:length(data)
     ui8LookupTableIndex = bitxor(data(I),uint8(bitshift(ui16RetCRC16,-8)));
-    mod(bitshift(ui16RetCRC16,8),65536)
+    mod(bitshift(ui16RetCRC16,8),65536);
     %ui8LookupTableIndex = bitxor(hex2dec(data(I)),uint8(bitshift(ui16RetCRC16,-8)));
     ui16RetCRC16 = bitxor(Crc_ui16LookupTable(double(ui8LookupTableIndex)+1),mod(bitshift(ui16RetCRC16,8),65536));
 end

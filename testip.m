@@ -35,6 +35,8 @@ messnoCHK = [field1_1 , field1_2,...
 message = [messnoCHK, crc1, crc2];
 sprintf('%X %X',crc1, crc2)
 msg =[170	65	0	18	0	235	0	0	0	0	0	0	0	0	0	5	128 208];
+
+%% configurar IP
 %tcpobj = tcpclient('192.168.1.4',4712);
 tcpobj = tcpclient('10.10.200.20',4712);
 pause(2)
