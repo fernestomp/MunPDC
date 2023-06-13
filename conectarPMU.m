@@ -1,4 +1,4 @@
-%archivo de funciones que puede ser usada por la app pero no exclusivamente
+Then %archivo de funciones que puede ser usada por la app pero no exclusivamente
 %% ------------ CONECTAR-------------------
 function [tcpobj, dFrame] = conectarPMU(ip,puerto,idcode)
 %ip: ip de la PMU
